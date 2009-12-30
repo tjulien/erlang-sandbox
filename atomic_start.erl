@@ -1,11 +1,10 @@
 -module(atomic_start).
--export([start/2, wait/0]).
+-export([start/2]).
 
-wait() ->
-    receive
-	die ->
-	    void
-    end.
+%%
+% Exercise 8.11 1. from Programming Erlang by Joe Armstrong
+% spawns Fun and registers it under name ProcName atomically
+%%
 
 start(ProcName, Fun) ->
     Pid = spawn(fun() -> run_or_die(Fun) end),
@@ -19,16 +18,9 @@ start(ProcName, Fun) ->
 run_or_die(Fun) ->
     receive 
 	true ->
-	    Fun(),
-	    io:format("~w~n", [registered()]);
+	    Fun();
+	    %io:format("~w~n", [registered()]);
 	false ->
 	    false
     end.
-
-print([]) ->
-    io:format("~n");
-print([H|T]) ->
-	     io:format("~w, ", H),
-	     print(T).
-	
 
